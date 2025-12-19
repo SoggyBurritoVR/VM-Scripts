@@ -124,16 +124,16 @@
         const container = document.createElement('div');
         Object.assign(container.style, {
             position: 'fixed',
-            top: '43%',
-            left: '7%',
-            transform: 'translate(-50%, -50%)',
-            zIndex: '9999'
+            bottom: '50px',  // distance from bottom of viewport
+            right: '50px',   // distance from right of viewport
+            zIndex: '9999',
         });
 
         const buttonWrapper = document.createElement('div');
         buttonWrapper.style.position = 'relative';
         container.appendChild(buttonWrapper);
 
+        // Main button
         const mainButton = document.createElement('button');
         Object.assign(mainButton.style, {
             padding: '10px 20px',
@@ -150,6 +150,7 @@
         mainButton.innerText = 'Auto Check';
         buttonWrapper.appendChild(mainButton);
 
+        // Toggle button
         const toggleButton = document.createElement('button');
         Object.assign(toggleButton.style, {
             position: 'absolute',
@@ -167,6 +168,7 @@
         toggleButton.innerText = '⏶';
         buttonWrapper.appendChild(toggleButton);
 
+        // Dropdown container
         const actionContainer = document.createElement('div');
         Object.assign(actionContainer.style, {
             position: 'absolute',
@@ -176,10 +178,11 @@
             height: '0',
             overflow: 'hidden',
             opacity: '0',
-            transition: 'height 0.3s ease, opacity 0.3s ease'
+            transition: 'height 0.3s ease, opacity 0.3s ease',
         });
         container.appendChild(actionContainer);
 
+        // Combined Auto Check All button
         const combinedButton = document.createElement('button');
         Object.assign(combinedButton.style, {
             padding: '8px 12px',
@@ -189,23 +192,23 @@
             borderRadius: '5px',
             cursor: 'pointer',
             marginTop: '10px',
-            width: '100%'
+            width: '100%',
         });
         combinedButton.innerText = 'Auto Check All';
         combinedButton.onclick = autoCheckAll;
         window.combinedButtonRef = combinedButton;
         actionContainer.appendChild(combinedButton);
 
+        // Toggle dropdown behavior
         toggleButton.onclick = () => {
             const collapsed = actionContainer.style.height === '0px';
-            actionContainer.style.height = collapsed ? `${combinedButton.offsetHeight + BUTTON_WRAPPER_PADDING}px` : '0px';
+            actionContainer.style.height = collapsed ? `${combinedButton.offsetHeight + 20}px` : '0px';
             actionContainer.style.opacity = collapsed ? '1' : '0';
             toggleButton.innerText = collapsed ? '⏷' : '⏶';
         };
 
         document.body.appendChild(container);
     };
-
     window.addEventListener('load', createTriggerButton);
 
 })();
