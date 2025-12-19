@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Canvas Auto Check All Graded Assignments (Optimized)
 // @namespace    Violentmonkey Scripts
-// @version      1.0.0
+// @version      0.9.7
 // @description  Click all assignment comments and open unread submissions in background with completion popup on Canvas. Responsive toggle button, live progress counter. Optimized for performance.
 // @author       SB
 // @match        https://perscholas.instructure.com/courses/*/grades*
