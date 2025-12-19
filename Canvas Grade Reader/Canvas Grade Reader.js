@@ -1,9 +1,10 @@
 // ==UserScript==
 // @name         Canvas Grade Reader
-// @namespace    Violentmonkey Scripts
+// @namespace    https://github.com/SoggyBurritoVR/VM-Scripts/tree/main/Canvas%20Grade%20Reader
 // @version      1.0.0
 // @description  Auto-check unread Canvas submissions with draggable, persistent UI. SPA-safe, touch-friendly, resettable position.
 // @author       SB
+// @icon         https://github.com/zerodytrash/Simple-YouTube-Age-Restriction-Bypass/raw/v2.5.4/src/extension/icon/icon_64.png
 // @match        https://perscholas.instructure.com/courses/*/grades*
 // @grant        none
 // ==/UserScript==
