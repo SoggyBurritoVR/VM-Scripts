@@ -3,7 +3,7 @@
 // @namespace    Violentmonkey Scripts
 // @version      6.3.1
 // @description  Click all assignment comments and open unread submissions in background with completion popup on Canvas. Responsive toggle button, live progress counter. Optimized for performance.
-// @author       OGKtest
+// @author       SB
 // @match        https://perscholas.instructure.com/courses/*/grades*
 // @grant        none
 // ==/UserScript==
