@@ -7,7 +7,6 @@
 // @icon         https://raw.githubusercontent.com/SoggyBurritoVR/VM-Scripts/refs/heads/main/Canvas%20Grade%20Reader/CanvasScriptIcon.png
 // @match        https://perscholas.instructure.com/courses/*/grades*
 // @grant        none
-
 // @updateURL https://github.com/SoggyBurritoVR/VM-Scripts/blob/main/CanvasGradeReader/CanvasGradeReader.js
 // @downloadURL https://github.com/SoggyBurritoVR/VM-Scripts/blob/main/CanvasGradeReader/CanvasGradeReader.js
 // ==/UserScript==
