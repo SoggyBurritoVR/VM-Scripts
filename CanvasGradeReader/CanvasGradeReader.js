@@ -10,7 +10,7 @@
 // @updateURL https://github.com/SoggyBurritoVR/VM-Scripts/blob/main/CanvasGradeReader/CanvasGradeReader.js
 // @downloadURL https://github.com/SoggyBurritoVR/VM-Scripts/blob/main/CanvasGradeReader/CanvasGradeReader.js
 // ==/UserScript==
-
+//this is a test of the update function!
 (function () {
     'use strict';
 
