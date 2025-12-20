@@ -4,7 +4,7 @@
 // @version      1.0.0
 // @description  Auto-check unread Canvas submissions with draggable, persistent UI. SPA-safe, touch-friendly, resettable position.
 // @author       SB
-// @icon         https://github.com/zerodytrash/Simple-YouTube-Age-Restriction-Bypass/raw/v2.5.4/src/extension/icon/icon_64.png
+// @icon         https://raw.githubusercontent.com/SoggyBurritoVR/VM-Scripts/refs/heads/main/Canvas%20Grade%20Reader/CanvasScriptIcon.png
 // @match        https://perscholas.instructure.com/courses/*/grades*
 // @grant        none
 // ==/UserScript==
@@ -13,7 +13,7 @@
     'use strict';
 
     /******** CONFIG ********/
-    const LOAD_DELAY_MS = 500;
+    const LOAD_DELAY_MS = 100;
     const POPUP_DURATION_MS = 3000;
     const ROUTE_CHECK_INTERVAL = 500;
     const STORAGE_KEY = 'vmAutoCheckButtonPos';
@@ -215,7 +215,7 @@
         wrapper.style.alignItems = 'center';
         wrapper.style.borderRadius = '20px';
         wrapper.style.overflow = 'hidden';
-        wrapper.style.boxShadow = '0 4px 8px rgba(0,0,0,0.15)';
+        //wrapper.style.boxShadow = '0 4px 8px rgba(0,0,0,0.15)';
         container.appendChild(wrapper);
 
         // Main button
@@ -223,7 +223,7 @@
         main.textContent = 'Auto Check';
         Object.assign(main.style, {
             flexGrow: '1',
-            padding: '10px 16px',
+            padding: '10px 17px',
             background: '#007bff',
             color: '#fff',
             border: 'none',
@@ -246,7 +246,7 @@
             border: 'none',
             cursor: 'pointer',
             fontSize: '18px',
-            lineHeight: '36px',
+            lineHeight: '35px',
             textAlign: 'center',
             userSelect: 'none',
             outline: 'none',
