@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Canvas Grade Reader
 // @namespace    https://github.com/SoggyBurritoVR/VM-Scripts/tree/main/CanvasGradeReader
-// @version      1.0.1.1
+// @version      1.0
 // @description  Auto-check unread Canvas submissions with draggable, persistent UI. SPA-safe, touch-friendly, resettable position.
 // @author       SB
 // @icon         https://raw.githubusercontent.com/SoggyBurritoVR/VM-Scripts/refs/heads/main/CanvasGradeReader/CanvasScriptIcon.png
@@ -12,7 +12,6 @@
 // ==/UserScript==
 (function () {
     'use strict';
-
     /******** CONFIG ********/
     const LOAD_DELAY_MS = 100;
     const POPUP_DURATION_MS = 3000;
