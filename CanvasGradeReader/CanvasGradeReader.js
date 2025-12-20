@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name         Canvas Grade Reader
 // @namespace    https://github.com/SoggyBurritoVR/VM-Scripts/tree/main/CanvasGradeReader
-// @version      1.0
+// @version      1.1
 // @description  Auto-check unread Canvas submissions with draggable, persistent UI. SPA-safe, touch-friendly, resettable position.
 // @author       SB
 // @icon         https://raw.githubusercontent.com/SoggyBurritoVR/VM-Scripts/refs/heads/main/CanvasGradeReader/CanvasScriptIcon.png
 // @match        https://perscholas.instructure.com/courses/*/grades*
+// @match        file://*/*
 // @grant        none
 // @downloadURL https://raw.githubusercontent.com/SoggyBurritoVR/VM-Scripts/refs/heads/main/CanvasGradeReader/CanvasGradeReader.js
 // @updateURL https://raw.githubusercontent.com/SoggyBurritoVR/VM-Scripts/refs/heads/main/CanvasGradeReader/CanvasGradeReader.js
@@ -85,7 +86,16 @@
         combinedButtonRef.textContent = 'Auto Check All';
         combinedButtonRef.disabled = false;
         showPopup('Auto Check All finished!');
-    };
+
+        // Play a ding sound when the process is finished
+        const doneSound = new Audio('https://cdn.freesound.org/previews/256/256113_3263906-lq.mp3'); // Use a URL to a ding sound
+        doneSound.play();
+
+          // Reload the page after the process is complete
+        setTimeout(() => {
+        location.reload(); // Reload the page
+    },  POPUP_DURATION_MS);  // Delay it slightly to give the popup time to show
+};
 
     /******** POPUP ********/
     const showPopup = (msg) => {
