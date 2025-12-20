@@ -1,14 +1,12 @@
 // ==UserScript==
 // @name         Canvas Grade Reader
-// @namespace    https://github.com/SoggyBurritoVR/VM-Scripts/tree/main/Canvas%20Grade%20Reader
+// @namespace    https://github.com/SoggyBurritoVR/VM-Scripts/tree/main/CanvasGradeReader
 // @version      1.0.1
 // @description  Auto-check unread Canvas submissions with draggable, persistent UI. SPA-safe, touch-friendly, resettable position.
 // @author       SB
-// @icon         https://raw.githubusercontent.com/SoggyBurritoVR/VM-Scripts/refs/heads/main/Canvas%20Grade%20Reader/CanvasScriptIcon.png
+// @icon         https://raw.githubusercontent.com/SoggyBurritoVR/VM-Scripts/refs/heads/main/CanvasGradeReader/CanvasScriptIcon.png
 // @match        https://perscholas.instructure.com/courses/*/grades*
 // @grant        none
-// @updateURL https://raw.githubusercontent.com/SoggyBurritoVR/VM-Scripts/refs/heads/main/CanvasGradeReader/CanvasGradeReader.js
-// @downloadURL https://raw.githubusercontent.com/SoggyBurritoVR/VM-Scripts/refs/heads/main/CanvasGradeReader/CanvasGradeReader.js
 // ==/UserScript==
 //this is a test of the update function!
 (function () {
