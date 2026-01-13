@@ -1,11 +1,13 @@
 // ==UserScript==
 // @name         Uncap HTML5 Video Speed & Fast Complete
-// @namespace    https://yoursite.dev/
-// @version      1.1
+// @namespace    https://github.com/SoggyBurritoVR/VM-Scripts/tree/main/Uncap%20HTML5%20Video%20Speed
+// @version      1.0
 // @description  Remove playbackRate limits and allow speeds beyond 2x, plus hotkey to instantly finish video
 // @author       SB
 // @match        *://*/*
 // @grant        none
+// @downloadURL https://raw.githubusercontent.com/SoggyBurritoVR/VM-Scripts/refs/heads/main/Uncap%20HTML5%20Video%20Speed/UncapHTML5VideoSpeed.js
+// @updateURL https://raw.githubusercontent.com/SoggyBurritoVR/VM-Scripts/refs/heads/main/Uncap%20HTML5%20Video%20Speed/UncapHTML5VideoSpeed.js
 // @run-at       document-start
 // ==/UserScript==
 
