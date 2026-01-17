@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Uncap HTML5 Video Speed & Fast Complete
 // @namespace    https://github.com/SoggyBurritoVR/VM-Scripts/tree/main/Uncap%20HTML5%20Video%20Speed
-// @version      1.0
+// @version      1.0.1
 // @description  Remove playbackRate limits and allow speeds beyond 2x, plus hotkey to instantly finish video
 // @author       SB
 // @match        *://*/*
@@ -83,7 +83,7 @@
     // Shift + 1: instantly finish video
     if (e.shiftKey && e.code === 'Digit1') {
       console.log('Fast-completing video...');
-      const step = 5; // seconds per tick (can increase for faster completion)
+      const step = 200; // seconds per tick (can increase for faster completion)
       const intervalMs = 10; // ms per tick
 
       const fastInterval = setInterval(() => {
