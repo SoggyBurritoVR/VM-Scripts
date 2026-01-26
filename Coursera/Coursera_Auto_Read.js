@@ -1,10 +1,12 @@
 // ==UserScript==
-// @name         Coursera Auto Click Multiple Buttons (Delayed)
+// @name         Coursera Auto Finish Reading Tasks
 // @namespace    violentmonkey-coursera-autoclick
 // @version      1.0
 // @author       SB
 // @description  Auto-click multiple buttons based on their text after full page load
 // @match        https://www.coursera.org/*
+// @downloadURL https://raw.githubusercontent.com/SoggyBurritoVR/VM-Scripts/refs/heads/main/Coursera/Coursera_Auto_Read.js
+// @updateURL https://raw.githubusercontent.com/SoggyBurritoVR/VM-Scripts/refs/heads/main/Coursera/Coursera_Auto_Read.js
 // @grant        none
 // ==/UserScript==
 
@@ -14,7 +16,7 @@
     // Define the array of button texts you're looking for
     const BUTTON_TEXTS = [
         "Mark as completed",  // Existing button
-        // Add more button texts as needed
+        // Add more button texts as needed (might be bugged dont mess with it)
     ];
 
     // Function to check if the button contains one of the desired texts

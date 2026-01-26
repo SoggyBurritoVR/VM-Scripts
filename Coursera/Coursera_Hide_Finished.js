@@ -1,11 +1,13 @@
 // ==UserScript==
-// @name         Coursera Hide Success Icons Max Optimized
+// @name         Coursera Hide Finished Tasks
 // @namespace    http://tampermonkey.net/
 // @version      1.0
-// @description  Efficiently hides success icons inside outline items on Coursera (fully optimized, local only)
+// @description  Efficiently hides finished taskss on Coursera (fully optimized, local only)
 // @author       SB
 // @match        https://www.coursera.org/*
 // @grant        none
+// @downloadURL https://raw.githubusercontent.com/SoggyBurritoVR/VM-Scripts/refs/heads/main/Coursera/Coursera_Hide_Finished.js
+// @updateURL https://raw.githubusercontent.com/SoggyBurritoVR/VM-Scripts/refs/heads/main/Coursera/Coursera_Hide_Finished.js
 // @run-at       document-idle
 // ==/UserScript==
 
