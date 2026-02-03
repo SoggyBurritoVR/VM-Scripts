@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         GE Tracker - Hide Outdated Prices + Auto ROI Sort
+// @name         GE Tracker - Hide Outdated Prices + Auto ROI Sort on Death's Coffer Page
 // @namespace    https://ge-tracker.com/
 // @version      1.0
 // @author       SB
