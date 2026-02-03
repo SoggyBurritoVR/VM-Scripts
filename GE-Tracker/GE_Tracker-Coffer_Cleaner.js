@@ -4,6 +4,7 @@
 // @version      1.0
 // @author       SB
 // @description   Hides outdated prices and forces ROI% descending sort
+// @icon         https://raw.githubusercontent.com/SoggyBurritoVR/VM-Scripts/refs/heads/main/GE-Tracker/GETracker_logo_small.png
 // @downloadURL https://raw.githubusercontent.com/SoggyBurritoVR/VM-Scripts/refs/heads/main/GE-Tracker/GE_Tracker-Coffer_Cleaner.js
 // @updateURL https://raw.githubusercontent.com/SoggyBurritoVR/VM-Scripts/refs/heads/main/GE-Tracker/GE_Tracker-Coffer_Cleaner.js
 // @match        https://www.ge-tracker.com/deaths-coffer
