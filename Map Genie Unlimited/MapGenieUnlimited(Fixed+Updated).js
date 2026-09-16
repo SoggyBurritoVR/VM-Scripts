@@ -1,15 +1,15 @@
 // ==UserScript==
 // @name         MapGenie Unlimited
 // @namespace    http://tampermonkey.net/
-// @version      5.0
+// @version      3.0
 // @description  Local unlimited locations, presets, profile import/export, and hide-found locations for MapGenie
 // @author       TropicalFrog3 + SoggyBurrito (AI Assisted)
 // @license      MIT
 // @match        https://mapgenie.io/*
 // @icon         https://cdn.mapgenie.io/favicons/mapgenie/favicon-32x32.png
 // @grant        none
-// @downloadURL https://raw.githubusercontent.com/SoggyBurritoVR/VM-Scripts/refs/heads/main/Map%20Genie%20Unlimited/MapGenieUnlimited(Fixed+Updated).js
-// @updateURL   https://raw.githubusercontent.com/SoggyBurritoVR/VM-Scripts/refs/heads/main/Map%20Genie%20Unlimited/MapGenieUnlimited(Fixed+Updated).js
+// @downloadURL  https://raw.githubusercontent.com/SoggyBurritoVR/VM-Scripts/refs/heads/main/Map%20Genie%20Unlimited/MapGenieUnlimited(Fixed+Updated).js
+// @updateURL    https://raw.githubusercontent.com/SoggyBurritoVR/VM-Scripts/refs/heads/main/Map%20Genie%20Unlimited/MapGenieUnlimited(Fixed+Updated).js
 // @run-at       document-start
 // ==/UserScript==
 //Based on https://greasyfork.org/en/scripts/560496-mapgenie-unlimited
@@ -22,6 +22,8 @@
     const PRESETS_KEY = 'mapgenie_local_presets';
     const LOCATIONS_KEY = 'mapgenie_local_locations';
     const HIDE_FOUND_KEY = 'mapgenie_hide_found';
+
+    const MAX_MARKED_LOCATIONS = 999999;
 
     let presetIdCounter = Date.now();
 
@@ -39,7 +41,12 @@
                 ? value.filter(p => p && p.title)
                 : [];
         } catch (err) {
-            console.warn(PREFIX, 'Could not read presets:', err);
+            console.warn(
+                PREFIX,
+                'Could not read presets:',
+                err
+            );
+
             return [];
         }
     }
@@ -50,12 +57,18 @@
                 PRESETS_KEY,
                 JSON.stringify(
                     Array.isArray(presets)
-                        ? presets.filter(p => p && p.title)
+                        ? presets.filter(
+                            p => p && p.title
+                        )
                         : []
                 )
             );
         } catch (err) {
-            console.error(PREFIX, 'Could not save presets:', err);
+            console.error(
+                PREFIX,
+                'Could not save presets:',
+                err
+            );
         }
     }
 
@@ -65,11 +78,18 @@
                 localStorage.getItem(LOCATIONS_KEY) || '{}'
             );
 
-            return value && typeof value === 'object'
+            return value &&
+                typeof value === 'object' &&
+                !Array.isArray(value)
                 ? value
                 : {};
         } catch (err) {
-            console.warn(PREFIX, 'Could not read locations:', err);
+            console.warn(
+                PREFIX,
+                'Could not read locations:',
+                err
+            );
+
             return {};
         }
     }
@@ -81,12 +101,20 @@
                 JSON.stringify(locations)
             );
         } catch (err) {
-            console.error(PREFIX, 'Could not save locations:', err);
+            console.error(
+                PREFIX,
+                'Could not save locations:',
+                err
+            );
         }
     }
 
     function getHideFound() {
-        return localStorage.getItem(HIDE_FOUND_KEY) === 'true';
+        return (
+            localStorage.getItem(
+                HIDE_FOUND_KEY
+            ) === 'true'
+        );
     }
 
     function saveHideFound(value) {
@@ -101,13 +129,18 @@
     // ============================================================
 
     function getMapKey() {
-        const parts = window.location.pathname
-            .split('/')
-            .filter(Boolean);
+        const parts =
+            window.location.pathname
+                .split('/')
+                .filter(Boolean);
 
-        const mapsIndex = parts.indexOf('maps');
+        const mapsIndex =
+            parts.indexOf('maps');
 
-        if (mapsIndex < 1 || !parts[mapsIndex + 1]) {
+        if (
+            mapsIndex < 1 ||
+            !parts[mapsIndex + 1]
+        ) {
             return null;
         }
 
@@ -191,9 +224,14 @@
     // MAP DATA RESPONSE
     // ============================================================
 
-    function buildMapDataResponse(originalData = {}) {
-        const localLocations = getMapLocations();
-        const localPresets = getPresets();
+    function buildMapDataResponse(
+        originalData = {}
+    ) {
+        const localLocations =
+            getMapLocations();
+
+        const localPresets =
+            getPresets();
 
         const locations = {};
 
@@ -202,10 +240,12 @@
         }
 
         const result = {
-            ...(originalData &&
-            typeof originalData === 'object'
-                ? originalData
-                : {})
+            ...(
+                originalData &&
+                typeof originalData === 'object'
+                    ? originalData
+                    : {}
+            )
         };
 
         result.locations = {
@@ -214,23 +254,39 @@
         };
 
         result.gameLocationsCount =
-            Object.keys(result.locations).length;
+            Object.keys(
+                result.locations
+            ).length;
 
         result.hasPro = true;
 
-        result.maxMarkedLocations = 999999;
+        result.maxMarkedLocations =
+            MAX_MARKED_LOCATIONS;
 
-        result.presets = localPresets;
+        result.presets =
+            localPresets;
 
-        if (!Array.isArray(result.trackedCategoryIds)) {
+        if (
+            !Array.isArray(
+                result.trackedCategoryIds
+            )
+        ) {
             result.trackedCategoryIds = [];
         }
 
-        if (!Array.isArray(result.suggestions)) {
+        if (
+            !Array.isArray(
+                result.suggestions
+            )
+        ) {
             result.suggestions = [];
         }
 
-        if (!Array.isArray(result.notes)) {
+        if (
+            !Array.isArray(
+                result.notes
+            )
+        ) {
             result.notes = [];
         }
 
@@ -242,7 +298,10 @@
     // ============================================================
 
     function injectUser(user) {
-        if (!user || typeof user !== 'object') {
+        if (
+            !user ||
+            typeof user !== 'object'
+        ) {
             return user;
         }
 
@@ -256,9 +315,14 @@
                 user.locations = {};
             }
 
-            for (const id of getMapLocations()) {
-                user.locations[String(id)] = true;
+            for (
+                const id of getMapLocations()
+            ) {
+                user.locations[
+                    String(id)
+                ] = true;
             }
+
         } catch (err) {
             console.warn(
                 PREFIX,
@@ -271,18 +335,26 @@
     }
 
     function injectMapData(data) {
-        if (!data || typeof data !== 'object') {
+        if (
+            !data ||
+            typeof data !== 'object'
+        ) {
             return data;
         }
 
         try {
-            const patched = buildMapDataResponse(data);
+            const patched =
+                buildMapDataResponse(data);
 
-            for (const key of Object.keys(patched)) {
-                data[key] = patched[key];
+            for (
+                const key of Object.keys(patched)
+            ) {
+                data[key] =
+                    patched[key];
             }
 
             return data;
+
         } catch (err) {
             console.warn(
                 PREFIX,
@@ -311,19 +383,24 @@
             !existingUser ||
             existingUser.configurable
         ) {
-            Object.defineProperty(window, 'user', {
-                configurable: true,
+            Object.defineProperty(
+                window,
+                'user',
+                {
+                    configurable: true,
 
-                get() {
-                    return internalUser;
-                },
+                    get() {
+                        return internalUser;
+                    },
 
-                set(value) {
-                    internalUser =
-                        injectUser(value);
+                    set(value) {
+                        internalUser =
+                            injectUser(value);
+                    }
                 }
-            });
+            );
         }
+
     } catch (err) {
         console.warn(
             PREFIX,
@@ -349,19 +426,24 @@
             !existingMapData ||
             existingMapData.configurable
         ) {
-            Object.defineProperty(window, 'mapData', {
-                configurable: true,
+            Object.defineProperty(
+                window,
+                'mapData',
+                {
+                    configurable: true,
 
-                get() {
-                    return internalMapData;
-                },
+                    get() {
+                        return internalMapData;
+                    },
 
-                set(value) {
-                    internalMapData =
-                        injectMapData(value);
+                    set(value) {
+                        internalMapData =
+                            injectMapData(value);
+                    }
                 }
-            });
+            );
         }
+
     } catch (err) {
         console.warn(
             PREFIX,
@@ -380,17 +462,20 @@
                 String(url),
                 window.location.origin
             ).toString();
+
         } catch {
             return String(url || '');
         }
     }
 
     function getLocationId(url) {
-        const cleanUrl = getUrlString(url);
+        const cleanUrl =
+            getUrlString(url);
 
-        const match = cleanUrl.match(
-            /\/api\/v1\/user\/locations\/(\d+)(?:[/?#]|$)/
-        );
+        const match =
+            cleanUrl.match(
+                /\/api\/v1\/user\/locations\/(\d+)(?:[/?#]|$)/
+            );
 
         return match
             ? Number(match[1])
@@ -398,11 +483,13 @@
     }
 
     function getPresetId(url) {
-        const cleanUrl = getUrlString(url);
+        const cleanUrl =
+            getUrlString(url);
 
-        const match = cleanUrl.match(
-            /\/api\/v1\/user\/presets\/(\d+)(?:[/?#]|$)/
-        );
+        const match =
+            cleanUrl.match(
+                /\/api\/v1\/user\/presets\/(\d+)(?:[/?#]|$)/
+            );
 
         return match
             ? Number(match[1])
@@ -440,7 +527,11 @@
             }
         }
 
-        if (body instanceof URLSearchParams) {
+        if (
+            typeof URLSearchParams !==
+            'undefined' &&
+            body instanceof URLSearchParams
+        ) {
             return Object.fromEntries(
                 body.entries()
             );
@@ -449,7 +540,7 @@
         return body;
     }
 
-    // ============================================================
+      // ============================================================
     // XHR INTERCEPTION
     // ============================================================
 
@@ -569,7 +660,7 @@
                         hasPro: true,
 
                         maxMarkedLocations:
-                            999999
+                            MAX_MARKED_LOCATIONS
                     });
 
                 console.log(
@@ -599,6 +690,7 @@
                 const presetId =
                     getPresetId(url);
 
+                // CREATE
                 if (
                     method === 'POST' &&
                     presetId === null
@@ -661,6 +753,7 @@
                     return;
                 }
 
+                // DELETE
                 if (
                     method === 'DELETE' &&
                     presetId !== null
@@ -693,6 +786,7 @@
                     return;
                 }
 
+                // UPDATE
                 if (
                     method === 'PUT' &&
                     presetId !== null
@@ -871,7 +965,7 @@
                             hasPro: true,
 
                             maxMarkedLocations:
-                                999999
+                                MAX_MARKED_LOCATIONS
                         });
 
                     console.log(
@@ -906,6 +1000,7 @@
                     const presetId =
                         getPresetId(url);
 
+                    // CREATE
                     if (
                         method === 'POST' &&
                         presetId === null
@@ -928,6 +1023,7 @@
                                 parseBody(
                                     requestBody
                                 );
+
                         } catch {
                             // Leave empty.
                         }
@@ -989,6 +1085,7 @@
                         );
                     }
 
+                    // DELETE
                     if (
                         method === 'DELETE' &&
                         presetId !== null
@@ -1012,6 +1109,7 @@
                         );
                     }
 
+                    // UPDATE
                     if (
                         method === 'PUT' &&
                         presetId !== null
@@ -1034,6 +1132,7 @@
                                 parseBody(
                                     requestBody
                                 );
+
                         } catch {
                             // Leave empty.
                         }
@@ -1196,6 +1295,7 @@
                 xhr.dispatchEvent(
                     new Event('loadend')
                 );
+
             } catch (err) {
                 console.error(
                     PREFIX,
@@ -1205,7 +1305,6 @@
             }
         }, 0);
     }
-
     // ============================================================
     // HIDE FOUND LOCATIONS
     //
@@ -1245,7 +1344,8 @@
     }
 
     function makeHideExpression() {
-        const ids = getMapLocations();
+        const ids =
+            getMapLocations();
 
         if (!ids.length) {
             return null;
@@ -1313,7 +1413,9 @@
         }
 
         try {
-            if (!map.getLayer('locations')) {
+            if (
+                !map.getLayer('locations')
+            ) {
                 return;
             }
 
@@ -1325,14 +1427,21 @@
                 filtersEqual(
                     currentFilter,
                     lastHideFilter
+                ) &&
+                filtersEqual(
+                    makeHideExpression(),
+                    lastHideExpression
                 )
             ) {
                 return;
             }
 
+
             let baseFilter =
                 currentFilter;
 
+            // If our filter is already installed,
+            // remove our previous exclusion first.
             if (
                 hideFilterInstalled &&
                 Array.isArray(currentFilter) &&
@@ -1351,6 +1460,22 @@
                 makeCombinedFilter(
                     cloneFilter(baseFilter)
                 );
+
+            // If there is nothing to hide, restore the
+            // existing MapGenie filter.
+            if (!newFilter) {
+                restoreHideFilter();
+                return;
+            }
+
+            if (
+                filtersEqual(
+                    currentFilter,
+                    newFilter
+                )
+            ) {
+                return;
+            }
 
             map.setFilter(
                 'locations',
@@ -1530,6 +1655,21 @@
                     )
                 );
 
+            if (
+                !newFilter
+            ) {
+                return;
+            }
+
+            if (
+                filtersEqual(
+                    currentFilter,
+                    newFilter
+                )
+            ) {
+                return;
+            }
+
             map.setFilter(
                 'locations',
                 newFilter
@@ -1552,765 +1692,797 @@
             // Ignore transient map/style changes.
         }
     }
+// ============================================================
+// EXPORT / IMPORT
+// ============================================================
 
-    // ============================================================
-    // EXPORT / IMPORT
-    // ============================================================
+function buildProfileExport() {
+    return {
+        format:
+            'MapGenie Unlimited Profile',
 
-    function buildProfileExport() {
-        return {
-            format:
-                'MapGenie Unlimited Profile',
+        version: 1,
 
-            version: 1,
+        exportedAt:
+            new Date().toISOString(),
 
-            exportedAt:
-                new Date().toISOString(),
+        presets:
+            getPresets(),
 
-            presets:
-                getPresets(),
+        locations:
+            getLocations(),
 
-            locations:
-                getLocations(),
-
-            settings: {
-                hideFound:
-                    getHideFound()
-            }
-        };
-    }
-
-    function exportProfile() {
-        try {
-            const data =
-                buildProfileExport();
-
-            const json =
-                JSON.stringify(
-                    data,
-                    null,
-                    2
-                );
-
-            const blob =
-                new Blob(
-                    [json],
-                    {
-                        type:
-                            'application/json'
-                    }
-                );
-
-            const url =
-                URL.createObjectURL(
-                    blob
-                );
-
-            const link =
-                document.createElement(
-                    'a'
-                );
-
-            link.href = url;
-
-            link.download =
-                `mapgenie-profile-${new Date()
-                    .toISOString()
-                    .replace(/[:.]/g, '-')}.json`;
-
-            document.body.appendChild(
-                link
-            );
-
-            link.click();
-
-            link.remove();
-
-            setTimeout(
-                () =>
-                    URL.revokeObjectURL(
-                        url
-                    ),
-                1000
-            );
-
-            console.log(
-                PREFIX,
-                'Profile exported.'
-            );
-
-        } catch (err) {
-            console.error(
-                PREFIX,
-                'Export failed:',
-                err
-            );
-
-            alert(
-                'MapGenie Unlimited: export failed. Check the console for details.'
-            );
+        settings: {
+            hideFound:
+                getHideFound()
         }
-    }
+    };
+}
 
-    function importProfileObject(data) {
-        if (
-            !data ||
-            typeof data !== 'object'
-        ) {
-            throw new Error(
-                'Invalid profile.'
+function exportProfile() {
+    try {
+        const data =
+            buildProfileExport();
+
+        const json =
+            JSON.stringify(
+                data,
+                null,
+                2
             );
-        }
 
-        if (
-            data.locations &&
-            typeof data.locations ===
-                'object' &&
-            !Array.isArray(
-                data.locations
-            )
-        ) {
-            saveLocations(
-                data.locations
-            );
-        }
-
-        if (
-            Array.isArray(
-                data.presets
-            )
-        ) {
-            savePresets(
-                data.presets
-            );
-        }
-
-        if (
-            data.settings &&
-            typeof data.settings ===
-                'object' &&
-            typeof data.settings
-                .hideFound ===
-                'boolean'
-        ) {
-            saveHideFound(
-                data.settings.hideFound
-            );
-        }
-
-        // Older export format support
-        if (
-            data.localLocations &&
-            typeof data.localLocations ===
-                'object'
-        ) {
-            saveLocations(
-                data.localLocations
-            );
-        }
-
-        if (
-            data.localPresets &&
-            Array.isArray(
-                data.localPresets
-            )
-        ) {
-            savePresets(
-                data.localPresets
-            );
-        }
-
-        presetIdCounter =
-            Date.now();
-
-        restoreHideFilter();
-
-        setTimeout(() => {
-            applyHideFound();
-        }, 100);
-
-        updateUI();
-
-        return true;
-    }
-
-    function importProfile(file) {
-        if (!file) {
-            return;
-        }
-
-        const reader =
-            new FileReader();
-
-        reader.onload =
-            function () {
-                try {
-                    const data =
-                        JSON.parse(
-                            reader.result
-                        );
-
-                    importProfileObject(
-                        data
-                    );
-
-                    alert(
-                        'MapGenie Unlimited profile imported successfully.'
-                    );
-
-                    console.log(
-                        PREFIX,
-                        'Profile imported.'
-                    );
-
-                } catch (err) {
-                    console.error(
-                        PREFIX,
-                        'Import failed:',
-                        err
-                    );
-
-                    alert(
-                        'MapGenie Unlimited: invalid or unreadable profile.'
-                    );
+        const blob =
+            new Blob(
+                [json],
+                {
+                    type:
+                        'application/json'
                 }
-            };
-
-        reader.onerror =
-            function () {
-                alert(
-                    'MapGenie Unlimited: could not read the file.'
-                );
-            };
-
-        reader.readAsText(file);
-    }
-
-    // ============================================================
-    // CUSTOM UI
-    //
-    // The UI is inserted into MapGenie's EXISTING user panel.
-    //
-    // Structure:
-    //
-    //   Progress Tracker
-    //   Profile
-    //   Notes
-    //   Found Locations
-    //   Track Category
-    //   Tip
-    //   ------------------------
-    //   MapGenie Unlimited
-    //   Hide found locations [x]
-    //   Export Profile   Import Profile
-    //   ------------------------
-    //   Logout   My Account
-    //
-    // This means its position automatically follows the panel at
-    // any browser/window size.
-    // ============================================================
-
-    let panel = null;
-
-    function createUI() {
-        if (
-            document.getElementById(
-                'mg-unlimited-settings'
-            )
-        ) {
-            return true;
-        }
-
-        const userPanel =
-            document.getElementById(
-                'user-panel'
             );
 
-        if (!userPanel) {
-            return false;
-        }
-
-        const logout =
-            userPanel.querySelector(
-                '.logout'
+        const url =
+            URL.createObjectURL(
+                blob
             );
 
-        if (!logout) {
-            return false;
-        }
-
-        // --------------------------------------------------------
-        // Main container
-        // --------------------------------------------------------
-
-        panel =
+        const link =
             document.createElement(
-                'div'
+                'a'
             );
 
-        panel.id =
-            'mg-unlimited-settings';
+        link.href = url;
 
-        panel.innerHTML = `
-            <hr>
+        const mapName =
+            document.title
+                .replace(/\s*[-|]\s*MapGenie.*$/i, '')
+                .trim();
 
-            <div class="mg-unlimited-title">
-                MapGenie Unlimited
-            </div>
+        const date =
+            new Date()
+                .toISOString()
+                .slice(0, 10);
 
-            <label
-                class="mg-unlimited-toggle"
-                title="Hide locations you have marked as found"
-            >
-                <input
-                    type="checkbox"
-                    id="mg-hide-found"
-                >
+        link.download =
+            `mapgenie-${mapName || 'map'}-${date}.json`;
 
-                <span class="mg-checkbox"></span>
 
-                <span class="mg-toggle-text">
-                    Hide found locations
-                </span>
-            </label>
-
-            <div class="mg-unlimited-buttons">
-
-                <button
-                    type="button"
-                    id="mg-export"
-                    class="mg-unlimited-button"
-                >
-                    Export Profile
-                </button>
-
-                <button
-                    type="button"
-                    id="mg-import"
-                    class="mg-unlimited-button"
-                >
-                    Import Profile
-                </button>
-
-            </div>
-
-            <input
-                type="file"
-                id="mg-import-file"
-                accept=".json,application/json"
-                style="display:none;"
-            >
-
-            <div
-                id="mg-stats"
-                class="mg-unlimited-stats"
-            ></div>
-        `;
-
-        // --------------------------------------------------------
-        // Insert immediately BEFORE Logout/My Account
-        // --------------------------------------------------------
-
-        userPanel.insertBefore(
-            panel,
-            logout
+        document.body.appendChild(
+            link
         );
 
-        // --------------------------------------------------------
-        // Styling
-        //
-        // Designed to fit MapGenie's existing sidebar rather than
-        // looking like a separate floating application.
-        // --------------------------------------------------------
+        link.click();
 
-        if (
-            !document.getElementById(
-                'mg-unlimited-styles'
-            )
-        ) {
-            const style =
-                document.createElement(
-                    'style'
-                );
+        link.remove();
 
-            style.id =
-                'mg-unlimited-styles';
-
-            style.textContent = `
-
-                #mg-unlimited-settings {
-                    width: 100%;
-                    box-sizing: border-box;
-                    color: inherit;
-                    font-size: inherit;
-                }
-
-                #mg-unlimited-settings hr {
-                    margin-top: 10px;
-                    margin-bottom: 10px;
-                }
-
-                .mg-unlimited-title {
-                    text-align: center;
-                    font-weight: 600;
-                    font-size: 12px;
-                    line-height: 18px;
-                    margin-bottom: 8px;
-                    opacity: .9;
-                }
-
-                .mg-unlimited-toggle {
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 7px;
-                    cursor: pointer;
-                    user-select: none;
-                    margin: 0 0 9px 0;
-                    min-height: 24px;
-                }
-
-                .mg-unlimited-toggle input {
-                    position: absolute;
-                    opacity: 0;
-                    pointer-events: none;
-                }
-
-                .mg-checkbox {
-                    width: 15px;
-                    height: 15px;
-                    min-width: 15px;
-                    box-sizing: border-box;
-                    border: 1px solid rgba(255,255,255,.35);
-                    border-radius: 3px;
-                    background: rgba(0,0,0,.12);
-                    position: relative;
-                    transition:
-                        background .12s ease,
-                        border-color .12s ease;
-                }
-
-                .mg-unlimited-toggle
-                input:checked
-                + .mg-checkbox {
-                    background: #4c9aff;
-                    border-color: #4c9aff;
-                }
-
-                .mg-unlimited-toggle
-                input:checked
-                + .mg-checkbox::after {
-                    content: '';
-                    position: absolute;
-                    width: 4px;
-                    height: 8px;
-                    left: 5px;
-                    top: 2px;
-                    border: solid white;
-                    border-width: 0 2px 2px 0;
-                    transform: rotate(45deg);
-                }
-
-                .mg-toggle-text {
-                    line-height: 18px;
-                }
-
-                .mg-unlimited-buttons {
-                    display: flex;
-                    justify-content: center;
-                    gap: 6px;
-                    width: 100%;
-                    box-sizing: border-box;
-                }
-
-                .mg-unlimited-button {
-                    appearance: none;
-                    -webkit-appearance: none;
-                    border: 1px solid rgba(255,255,255,.22);
-                    background: rgba(255,255,255,.07);
-                    color: inherit;
-                    border-radius: 3px;
-                    padding: 5px 8px;
-                    font-family: inherit;
-                    font-size: 11px;
-                    line-height: 16px;
-                    cursor: pointer;
-                    transition:
-                        background .12s ease,
-                        border-color .12s ease;
-                    flex: 1;
-                    min-width: 0;
-                }
-
-                .mg-unlimited-button:hover {
-                    background: rgba(255,255,255,.14);
-                    border-color: rgba(255,255,255,.35);
-                }
-
-                .mg-unlimited-button:active {
-                    background: rgba(255,255,255,.19);
-                }
-
-                .mg-unlimited-stats {
-                    display: none;
-                }
-
-                /*
-                 * Keep the controls usable when the sidebar gets
-                 * narrow on smaller window sizes.
-                 */
-
-                @media (max-width: 400px) {
-                    .mg-unlimited-buttons {
-                        flex-direction: column;
-                    }
-
-                    .mg-unlimited-button {
-                        width: 100%;
-                    }
-                }
-            `;
-
-            document.head.appendChild(
-                style
-            );
-        }
-
-        // --------------------------------------------------------
-        // Hide-found checkbox
-        // --------------------------------------------------------
-
-        const hideCheckbox =
-            panel.querySelector(
-                '#mg-hide-found'
-            );
-
-        hideCheckbox.checked =
-            getHideFound();
-
-        hideCheckbox.addEventListener(
-            'change',
+        // Give the browser a moment to finish
+        // consuming the object URL.
+        setTimeout(
             () => {
-                const enabled =
-                    hideCheckbox.checked;
-
-                saveHideFound(
-                    enabled
+                URL.revokeObjectURL(
+                    url
                 );
-
-                if (enabled) {
-                    applyHideFound();
-                } else {
-                    restoreHideFilter();
-                }
-
-                updateUI();
-
-                console.log(
-                    PREFIX,
-                    'Hide found:',
-                    enabled
-                );
-            }
+            },
+            1000
         );
-
-        // --------------------------------------------------------
-        // Export
-        // --------------------------------------------------------
-
-        panel.querySelector(
-            '#mg-export'
-        ).addEventListener(
-            'click',
-            exportProfile
-        );
-
-        // --------------------------------------------------------
-        // Import
-        // --------------------------------------------------------
-
-        const importFile =
-            panel.querySelector(
-                '#mg-import-file'
-            );
-
-        panel.querySelector(
-            '#mg-import'
-        ).addEventListener(
-            'click',
-            () => {
-                importFile.value = '';
-                importFile.click();
-            }
-        );
-
-        importFile.addEventListener(
-            'change',
-            () => {
-                if (
-                    importFile.files &&
-                    importFile.files[0]
-                ) {
-                    importProfile(
-                        importFile.files[0]
-                    );
-                }
-            }
-        );
-
-        updateUI();
 
         console.log(
             PREFIX,
-            'UI inserted into #user-panel.'
+            'Profile exported.'
         );
 
+    } catch (err) {
+        console.error(
+            PREFIX,
+            'Export failed:',
+            err
+        );
+
+        alert(
+            'MapGenie Unlimited: export failed. Check the console for details.'
+        );
+    }
+}
+
+function importProfileObject(data) {
+    if (
+        !data ||
+        typeof data !== 'object'
+    ) {
+        throw new Error(
+            'Invalid profile.'
+        );
+    }
+
+    // --------------------------------------------------------
+    // Current format: locations
+    // --------------------------------------------------------
+
+    if (
+        data.locations &&
+        typeof data.locations ===
+            'object' &&
+        !Array.isArray(
+            data.locations
+        )
+    ) {
+        saveLocations(
+            data.locations
+        );
+    }
+
+    // --------------------------------------------------------
+    // Current format: presets
+    // --------------------------------------------------------
+
+    if (
+        Array.isArray(
+            data.presets
+        )
+    ) {
+        savePresets(
+            data.presets
+        );
+    }
+
+    // --------------------------------------------------------
+    // Settings
+    // --------------------------------------------------------
+
+    if (
+        data.settings &&
+        typeof data.settings ===
+            'object' &&
+        typeof data.settings.hideFound ===
+            'boolean'
+    ) {
+        saveHideFound(
+            data.settings.hideFound
+        );
+    }
+
+    // --------------------------------------------------------
+    // Older export format support
+    // --------------------------------------------------------
+
+    if (
+        data.localLocations &&
+        typeof data.localLocations ===
+            'object'
+    ) {
+        saveLocations(
+            data.localLocations
+        );
+    }
+
+    if (
+        data.localPresets &&
+        Array.isArray(
+            data.localPresets
+        )
+    ) {
+        savePresets(
+            data.localPresets
+        );
+    }
+
+    // Prevent collisions with imported preset IDs.
+    presetIdCounter =
+        Date.now();
+
+    // Rebuild the hide-found filter using
+    // the newly imported data.
+    restoreHideFilter();
+
+    setTimeout(
+        () => {
+            applyHideFound();
+        },
+        100
+    );
+
+    updateUI();
+
+    return true;
+}
+
+function importProfile(file) {
+    if (!file) {
+        return;
+    }
+
+    const reader =
+        new FileReader();
+
+    reader.onload =
+        function () {
+            try {
+                const data =
+                    JSON.parse(
+                        reader.result
+                    );
+
+                importProfileObject(
+                    data
+                );
+
+                alert(
+                    'MapGenie Unlimited profile imported successfully.'
+                );
+
+                console.log(
+                    PREFIX,
+                    'Profile imported.'
+                );
+
+            } catch (err) {
+                console.error(
+                    PREFIX,
+                    'Import failed:',
+                    err
+                );
+
+                alert(
+                    'MapGenie Unlimited: invalid or unreadable profile.'
+                );
+            }
+        };
+
+    reader.onerror =
+        function () {
+            alert(
+                'MapGenie Unlimited: could not read the file.'
+            );
+        };
+
+    reader.readAsText(
+        file
+    );
+}
+
+  // ============================================================
+// CUSTOM UI
+//
+// The UI is inserted into MapGenie's EXISTING user panel.
+//
+// Structure:
+//
+//   Progress Tracker
+//   Profile
+//   Notes
+//   Found Locations
+//   Track Category
+//   Tip
+//   ------------------------
+//   MapGenie Unlimited
+//   Hide found locations [x]
+//   Export Profile   Import Profile
+//   ------------------------
+//   Logout   My Account
+//
+// This means its position automatically follows the panel at
+// any browser/window size.
+// ============================================================
+
+let panel = null;
+
+function createUI() {
+    if (
+        document.getElementById(
+            'mg-unlimited-settings'
+        )
+    ) {
         return true;
     }
 
-    function updateUI() {
-        if (!panel) {
-            panel =
-                document.getElementById(
-                    'mg-unlimited-settings'
-                );
-        }
+    const userPanel =
+        document.getElementById(
+            'user-panel'
+        );
 
-        if (!panel) {
-            return;
-        }
-
-        const checkbox =
-            panel.querySelector(
-                '#mg-hide-found'
-            );
-
-        if (checkbox) {
-            checkbox.checked =
-                getHideFound();
-        }
-
-        const stats =
-            panel.querySelector(
-                '#mg-stats'
-            );
-
-        if (stats) {
-            stats.textContent =
-                `Saved locations: ${getMapLocations().length} · Presets: ${getPresets().length}`;
-        }
+    if (!userPanel) {
+        return false;
     }
 
-    // ============================================================
-    // PRESET UI
-    // ============================================================
+    const logout =
+        userPanel.querySelector(
+            '.logout'
+        );
 
-    function setupPresetDeleteHandler() {
-        document.addEventListener(
-            'click',
-            event => {
-                const target =
-                    event.target instanceof
-                    Element
-                        ? event.target
-                        : null;
+    if (!logout) {
+        return false;
+    }
 
-                if (!target) {
-                    return;
+    // --------------------------------------------------------
+    // Main container
+    // --------------------------------------------------------
+
+    panel =
+        document.createElement(
+            'div'
+        );
+
+    panel.id =
+        'mg-unlimited-settings';
+
+    panel.innerHTML = `
+        <hr>
+
+        <div class="mg-unlimited-title">
+            MapGenie Unlimited
+        </div>
+
+        <label
+            class="mg-unlimited-toggle"
+            title="Hide locations you have marked as found"
+        >
+            <input
+                type="checkbox"
+                id="mg-hide-found"
+            >
+
+            <span class="mg-checkbox"></span>
+
+            <span class="mg-toggle-text">
+                Hide found locations
+            </span>
+        </label>
+
+        <div class="mg-unlimited-buttons">
+
+            <button
+                type="button"
+                id="mg-export"
+                class="mg-unlimited-button"
+            >
+                Export Profile
+            </button>
+
+            <button
+                type="button"
+                id="mg-import"
+                class="mg-unlimited-button"
+            >
+                Import Profile
+            </button>
+
+        </div>
+
+        <input
+            type="file"
+            id="mg-import-file"
+            accept=".json,application/json"
+            style="display:none;"
+        >
+
+        <div
+            id="mg-stats"
+            class="mg-unlimited-stats"
+        ></div>
+    `;
+
+    // --------------------------------------------------------
+    // Insert immediately BEFORE Logout/My Account
+    // --------------------------------------------------------
+
+    userPanel.insertBefore(
+        panel,
+        logout
+    );
+
+    // --------------------------------------------------------
+    // Styling
+    // --------------------------------------------------------
+
+    if (
+        !document.getElementById(
+            'mg-unlimited-styles'
+        )
+    ) {
+        const style =
+            document.createElement(
+                'style'
+            );
+
+        style.id =
+            'mg-unlimited-styles';
+
+        style.textContent = `
+
+            #mg-unlimited-settings {
+                width: 100%;
+                box-sizing: border-box;
+                color: inherit;
+                font-size: inherit;
+            }
+
+            #mg-unlimited-settings hr {
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+
+            .mg-unlimited-title {
+                text-align: center;
+                font-weight: 600;
+                font-size: 12px;
+                line-height: 18px;
+                margin-bottom: 8px;
+                opacity: .9;
+            }
+
+            .mg-unlimited-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 7px;
+                cursor: pointer;
+                user-select: none;
+                margin: 0 0 9px 0;
+                min-height: 24px;
+            }
+
+            .mg-unlimited-toggle input {
+                position: absolute;
+                opacity: 0;
+                pointer-events: none;
+            }
+
+            .mg-checkbox {
+                width: 15px;
+                height: 15px;
+                min-width: 15px;
+                box-sizing: border-box;
+                border: 1px solid rgba(255,255,255,.35);
+                border-radius: 3px;
+                background: rgba(0,0,0,.12);
+                position: relative;
+                transition:
+                    background .12s ease,
+                    border-color .12s ease;
+            }
+
+            .mg-unlimited-toggle
+            input:checked
+            + .mg-checkbox {
+                background: #4c9aff;
+                border-color: #4c9aff;
+            }
+
+            .mg-unlimited-toggle
+            input:checked
+            + .mg-checkbox::after {
+                content: '';
+                position: absolute;
+                width: 4px;
+                height: 8px;
+                left: 5px;
+                top: 2px;
+                border: solid white;
+                border-width: 0 2px 2px 0;
+                transform: rotate(45deg);
+            }
+
+            .mg-toggle-text {
+                line-height: 18px;
+            }
+
+            .mg-unlimited-buttons {
+                display: flex;
+                justify-content: center;
+                gap: 6px;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .mg-unlimited-button {
+                appearance: none;
+                -webkit-appearance: none;
+                border: 1px solid rgba(255,255,255,.22);
+                background: rgba(255,255,255,.07);
+                color: inherit;
+                border-radius: 3px;
+                padding: 5px 8px;
+                font-family: inherit;
+                font-size: 11px;
+                line-height: 16px;
+                cursor: pointer;
+                transition:
+                    background .12s ease,
+                    border-color .12s ease;
+                flex: 1;
+                min-width: 0;
+            }
+
+            .mg-unlimited-button:hover {
+                background: rgba(255,255,255,.14);
+                border-color: rgba(255,255,255,.35);
+            }
+
+            .mg-unlimited-button:active {
+                background: rgba(255,255,255,.19);
+            }
+
+            .mg-unlimited-stats {
+                display: none;
+            }
+
+            @media (max-width: 400px) {
+                .mg-unlimited-buttons {
+                    flex-direction: column;
                 }
 
-                const trash =
-                    target.closest(
-                        '.ion-md-trash, [class*="trash"], [aria-label*="Delete"]'
-                    );
-
-                if (!trash) {
-                    return;
+                .mg-unlimited-button {
+                    width: 100%;
                 }
+            }
+        `;
 
-                const presetItem =
-                    trash.closest(
-                        '.presets-item, [class*="preset"]'
-                    );
-
-                if (!presetItem) {
-                    return;
-                }
-
-                // The API interception handles the deletion.
-            },
-            true
+        document.head.appendChild(
+            style
         );
     }
 
-    // ============================================================
-    // WAIT FOR MAPGENIE UI
-    //
-    // MapGenie can create #user-panel after DOMContentLoaded, so
-    // retry briefly instead of using hard-coded screen coordinates.
-    // ============================================================
+    // --------------------------------------------------------
+    // Hide-found checkbox
+    // --------------------------------------------------------
 
-    function waitForUI() {
-        let attempts = 0;
+    const hideCheckbox =
+        panel.querySelector(
+            '#mg-hide-found'
+        );
 
-        const timer =
-            setInterval(() => {
+    hideCheckbox.checked =
+        getHideFound();
+
+    hideCheckbox.addEventListener(
+        'change',
+        () => {
+            const enabled =
+                hideCheckbox.checked;
+
+            saveHideFound(
+                enabled
+            );
+
+            if (enabled) {
+                applyHideFound();
+            } else {
+                restoreHideFilter();
+            }
+
+            updateUI();
+
+            console.log(
+                PREFIX,
+                'Hide found:',
+                enabled
+            );
+        }
+    );
+
+    // --------------------------------------------------------
+    // Export
+    // --------------------------------------------------------
+
+    panel.querySelector(
+        '#mg-export'
+    ).addEventListener(
+        'click',
+        exportProfile
+    );
+
+    // --------------------------------------------------------
+    // Import
+    // --------------------------------------------------------
+
+    const importFile =
+        panel.querySelector(
+            '#mg-import-file'
+        );
+
+    panel.querySelector(
+        '#mg-import'
+    ).addEventListener(
+        'click',
+        () => {
+            importFile.value = '';
+            importFile.click();
+        }
+    );
+
+    importFile.addEventListener(
+        'change',
+        () => {
+            if (
+                importFile.files &&
+                importFile.files[0]
+            ) {
+                importProfile(
+                    importFile.files[0]
+                );
+            }
+        }
+    );
+
+    updateUI();
+
+    console.log(
+        PREFIX,
+        'UI inserted into #user-panel.'
+    );
+
+    return true;
+}
+
+function updateUI() {
+    if (!panel) {
+        panel =
+            document.getElementById(
+                'mg-unlimited-settings'
+            );
+    }
+
+    if (!panel) {
+        return;
+    }
+
+    const checkbox =
+        panel.querySelector(
+            '#mg-hide-found'
+        );
+
+    if (checkbox) {
+        checkbox.checked =
+            getHideFound();
+    }
+
+    const stats =
+        panel.querySelector(
+            '#mg-stats'
+        );
+
+    if (stats) {
+        stats.textContent =
+            `Saved locations: ${getMapLocations().length} · Presets: ${getPresets().length}`;
+    }
+}
+
+  // ============================================================
+// PRESET UI
+// ============================================================
+
+function setupPresetDeleteHandler() {
+    document.addEventListener(
+        'click',
+        event => {
+            const target =
+                event.target instanceof Element
+                    ? event.target
+                    : null;
+
+            if (!target) {
+                return;
+            }
+
+            const trash =
+                target.closest(
+                    '.ion-md-trash, [class*="trash"], [aria-label*="Delete"]'
+                );
+
+            if (!trash) {
+                return;
+            }
+
+            const presetItem =
+                trash.closest(
+                    '.presets-item, [class*="preset"]'
+                );
+
+            if (!presetItem) {
+                return;
+            }
+
+            // The API interception handles the deletion.
+        },
+        true
+    );
+}
+
+
+// ============================================================
+// WAIT FOR MAPGENIE UI
+// ============================================================
+
+function waitForUI() {
+    let attempts = 0;
+
+    const timer =
+        setInterval(
+            () => {
                 attempts++;
 
                 if (createUI()) {
-                    clearInterval(timer);
+                    clearInterval(
+                        timer
+                    );
+
                     return;
                 }
 
                 // Keep trying for roughly 30 seconds.
                 if (attempts >= 60) {
-                    clearInterval(timer);
+                    clearInterval(
+                        timer
+                    );
 
                     console.warn(
                         PREFIX,
                         'Could not find #user-panel.'
                     );
                 }
-            }, 500);
-    }
-
-    // ============================================================
-    // STARTUP
-    // ============================================================
-
-    savePresets(
-        getPresets()
-    );
-
-    console.log(
-        PREFIX,
-        'Loaded v5.0 for',
-        getMapKey(),
-        '| local locations:',
-        getMapLocations().length,
-        '| local presets:',
-        getPresets().length,
-        '| hide found:',
-        getHideFound()
-    );
-
-    if (
-        document.readyState ===
-        'loading'
-    ) {
-        document.addEventListener(
-            'DOMContentLoaded',
-            () => {
-                setupPresetDeleteHandler();
-                waitForUI();
-                startMapWatcher();
             },
-            { once: true }
+            500
         );
-    } else {
-        setupPresetDeleteHandler();
-        waitForUI();
-        startMapWatcher();
-    }
+}
+
+
+// ============================================================
+// STARTUP
+// ============================================================
+
+savePresets(
+    getPresets()
+);
+
+console.log(
+    PREFIX,
+    'Loaded v5.0 for',
+    getMapKey(),
+    '| local locations:',
+    getMapLocations().length,
+    '| local presets:',
+    getPresets().length,
+    '| hide found:',
+    getHideFound()
+);
+
+if (
+    document.readyState ===
+    'loading'
+) {
+    document.addEventListener(
+        'DOMContentLoaded',
+        () => {
+            setupPresetDeleteHandler();
+            waitForUI();
+            startMapWatcher();
+        },
+        { once: true }
+    );
+} else {
+    setupPresetDeleteHandler();
+    waitForUI();
+    startMapWatcher();
+}
 
 })();
+
