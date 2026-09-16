@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         MapGenie Unlimited
+// @name         MapGenie Unlimited (dev)
 // @namespace    http://tampermonkey.net/
-// @version      3.0
+// @version      3.1
 // @description  Local unlimited locations, presets, profile import/export, and hide-found locations for MapGenie
 // @author       TropicalFrog3 + SoggyBurrito (AI Assisted)
 // @license      MIT
@@ -1928,6 +1928,10 @@ function importProfile(file) {
                 alert(
                     'MapGenie Unlimited profile imported successfully.'
                 );
+
+                setTimeout(() => {
+                    window.location.reload();
+                }, 0);
 
                 console.log(
                     PREFIX,
