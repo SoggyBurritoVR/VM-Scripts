@@ -1,15 +1,15 @@
 // ==UserScript==
 // @name         MapGenie Unlimited
 // @namespace    http://tampermonkey.net/
-// @version      3.1
+// @version      3.1.1
 // @description  Local unlimited locations, presets, profile import/export, and hide-found locations for MapGenie
 // @author       TropicalFrog3 + SoggyBurrito (AI Assisted)
 // @license      MIT
 // @match        https://mapgenie.io/*
 // @icon         https://cdn.mapgenie.io/favicons/mapgenie/favicon-32x32.png
 // @grant        none
-// @downloadURL  https://raw.githubusercontent.com/SoggyBurritoVR/VM-Scripts/refs/heads/main/Map%20Genie%20Unlimited/MapGenieUnlimited(Fixed+Updated).js
-// @updateURL    https://raw.githubusercontent.com/SoggyBurritoVR/VM-Scripts/refs/heads/main/Map%20Genie%20Unlimited/MapGenieUnlimited(Fixed+Updated).js
+// @downloadURL  https://raw.githubusercontent.com/SoggyBurritoVR/VM-Scripts/refs/heads/main/Map%20Genie%20Unlimited/MapGenieUnlimited(Fixed%2BUpdated).js
+// @updateURL    https://raw.githubusercontent.com/SoggyBurritoVR/VM-Scripts/refs/heads/main/Map%20Genie%20Unlimited/MapGenieUnlimited(Fixed%2BUpdated).js
 // @run-at       document-start
 // ==/UserScript==
 //Based on https://greasyfork.org/en/scripts/560496-mapgenie-unlimited
