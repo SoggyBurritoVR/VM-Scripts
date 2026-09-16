@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         MapGenie Unlimited (dev)
+// @name         MapGenie Unlimited
 // @namespace    http://tampermonkey.net/
 // @version      3.1
 // @description  Local unlimited locations, presets, profile import/export, and hide-found locations for MapGenie
